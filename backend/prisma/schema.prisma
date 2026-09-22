@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+   output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(CLIENT)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  client       Client?
+}
+
+model Client {
+  id           Int      @id @default(autoincrement())
+  businessName String
+  phone        String?
+  address      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  userId       Int      @unique
+  user         User     @relation(fields: [userId], references: [id])
+
+  policies       Policy[]
+}
+
+enum Role {
+  ADMIN
+  CLIENT
+}
+
+model Policy {
+  id             Int          @id @default(autoincrement())
+  policyNumber   String       @unique
+  policyType     PolicyType
+  carrier        String?
+  coverageAmount Decimal?
+  effectiveDate  DateTime?
+  expirationDate DateTime?
+  status         PolicyStatus @default(ACTIVE)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  clientId       Int
+  client         Client       @relation(fields: [clientId], references: [id])
+}
+
+enum PolicyType {
+  GENERAL_LIABILITY
+  WORKERS_COMP
+  COMMERCIAL_AUTO
+  INLAND_MARINE
+  UMBRELLA
+  PROFESSIONAL_LIABILITY
+  BUILDERS_RISK
+  OTHER
+}
+
+enum PolicyStatus {
+  ACTIVE
+  PENDING
+  CANCELLED
+  EXPIRED
+}
