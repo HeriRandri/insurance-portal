@@ -21,6 +21,17 @@ export class ClientsService {
     });
   }
 
+  findMe(userId: number) {
+  return this.prisma.client.findUnique({
+    where: {
+      userId,
+    },
+    include: {
+      policies: true,
+    },
+  });
+}
+
   create(dto: CreateClientDto) {
     return this.prisma.client.create({
       data: {
