@@ -1,4 +1,5 @@
 import {
+  IsDateString,
   IsEnum,
   IsInt,
   IsNumber,
@@ -22,6 +23,22 @@ export class CreatePolicyDto {
   @IsNumber()
   coverageAmount?: number;
 
+   @IsOptional()
+@IsNumber()
+eachOccurrence?: number;
+
+@IsOptional()
+@IsNumber()
+generalAggregate?: number;
+
   @IsInt()
   clientId: number;
+
+  @IsOptional()
+  @IsDateString()
+  effectiveDate?: string;
+
+  @IsOptional()
+  @IsDateString()
+  expirationDate?: string;
 }

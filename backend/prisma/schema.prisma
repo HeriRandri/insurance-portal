@@ -48,6 +48,8 @@ model Policy {
   policyType     PolicyType
   carrier        String?
   coverageAmount Decimal?
+  eachOccurrence   Decimal?
+  generalAggregate Decimal?
   effectiveDate  DateTime?
   expirationDate DateTime?
   status         PolicyStatus @default(ACTIVE)
@@ -56,6 +58,8 @@ model Policy {
 
   clientId       Int
   client         Client       @relation(fields: [clientId], references: [id])
+
+  document  Document[]
 }
 
 enum PolicyType {
@@ -74,4 +78,21 @@ enum PolicyStatus {
   PENDING
   CANCELLED
   EXPIRED
+}
+model Document {
+  id         Int          @id @default(autoincrement())
+  name       String
+  filePath   String
+  type       DocumentType
+  createdAt  DateTime     @default(now())
+
+  policyId   Int
+  policy     Policy       @relation(fields: [policyId], references: [id])
+}
+
+enum DocumentType {
+  COI
+  DECLARATION
+  QUOTE
+  OTHER
 }
